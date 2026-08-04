@@ -31,6 +31,7 @@ public class UsuarioAssembler {
     /*Request para Entity*/
 
     public Usuario toDomainObject(UsuarioCreateRequest request) {
+
         return modelMapper.map(request, Usuario.class);
     }
 

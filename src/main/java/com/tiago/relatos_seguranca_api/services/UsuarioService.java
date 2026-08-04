@@ -1,5 +1,6 @@
 package com.tiago.relatos_seguranca_api.services;
 
+import com.tiago.relatos_seguranca_api.exception.ConflictException;
 import com.tiago.relatos_seguranca_api.infrastructure.assembler.UsuarioAssembler;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.UsuarioUpdateRequest;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.response.UsuarioResponse;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,19 +29,35 @@ public class UsuarioService { /*NÃO SE USA AUTOWIRED*/
                                 ", Type: " + Usuario.class.getSimpleName()));
     }
 
-    private void verifyIfEmailAlreadyExists(String email) {
-        usuarioRepository.findByEmail(email)
-                .ifPresent(user -> {
-                    throw new DataIntegrityViolationException(
-                            "Email [" + email + "] already exists");
-                });
+//    @Transactional
+//    public Usuario salvar(Usuario usuario) {
+//
+//        verifyIfEmailAlreadyExists(usuario.getEmail(), null);
+//
+//        return usuarioRepository.save(usuario);
+//    }
+
+//    private void verifyIfEmailAlreadyExists(String email) {
+//        usuarioRepository.findByEmail(email)
+//                .ifPresent(user -> {
+//                    throw new DataIntegrityViolationException(
+//                            "Email [" + email + "] already exists");
+//                });
+//    }
+
+    public void verifyIfEmailAlreadyExists(String email, Long id) {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+        if (usuario.isPresent() && !usuario.get().getId().equals(id)) {
+            throw new ConflictException("O e-mail informado já está cadastrado.");
+        }
     }
 
     @Transactional
     public Usuario save(Usuario usuario) {
-        verifyIfEmailAlreadyExists(usuario.getEmail());
+        verifyIfEmailAlreadyExists(usuario.getEmail(), null);
         return usuarioRepository.save(usuario);
     }
+
 
     @Transactional(readOnly = true)
     public List<UsuarioResponse> findAll() {

@@ -3,8 +3,11 @@ package com.tiago.relatos_seguranca_api.services;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.response.RelatoResponse;
 import com.tiago.relatos_seguranca_api.infrastructure.entity.Relato;
 import com.tiago.relatos_seguranca_api.infrastructure.entity.Usuario;
+import com.tiago.relatos_seguranca_api.infrastructure.enums.Prioridade;
 import com.tiago.relatos_seguranca_api.infrastructure.enums.StatusRelato;
 import com.tiago.relatos_seguranca_api.infrastructure.repository.RelatoRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +32,18 @@ public class RelatoService {
     private final UsuarioService usuarioService;
 
     @Transactional
-    public Relato salvarRelato(Relato relato) {
+    public Relato salvarRelato(Relato relato, Long usuarioId) {
 
-        Usuario usuario = usuarioService.findById(3L);
+        Usuario usuario = usuarioService.findById(usuarioId);
 
         relato.setUsuario(usuario);
         relato.setStatus(StatusRelato.ABERTO);
         relato.setDataDoRelato(LocalDateTime.now());
 
-        // Quando implementar o Spring Security
-        // Usuario usuarioLogado = usuarioAutenticado();
-        // relato.setUsuario(usuarioLogado);
-
         return relatoRepository.save(relato);
     }
 
-    @Transactional
+    //@Transactional
     public Relato findById (Long id) {
         return relatoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(
@@ -67,6 +66,11 @@ public class RelatoService {
         relatoRepository.deleteById(id);
     }
 
+//    @Transactional
+//    public Relato updateRelato(Relato relato) {
+//        return relatoRepository.save(relato);
+//    }
+
     @Transactional
     public Relato updateRelato(Long id, Relato relatoAtualizado) {
 
@@ -74,9 +78,21 @@ public class RelatoService {
 
         relatoExistente.setTitulo(relatoAtualizado.getTitulo());
         relatoExistente.setDescricao(relatoAtualizado.getDescricao());
-        relatoExistente.setStatus(relatoAtualizado.getStatus());
         relatoExistente.setPrioridade(relatoAtualizado.getPrioridade());
+        relatoExistente.setStatus(relatoAtualizado.getStatus());
 
         return relatoRepository.save(relatoExistente);
     }
+
+    /*Futuramente Se relato estiver CONCLUIDO
+→    não permite alterar prioridade ou somente Admin/técnico*/
+    @Transactional
+    public Relato updatePrioridadeRelato(Long id, Prioridade prioridade) {
+        Relato relato = findById(id);
+
+        relato.setPrioridade(prioridade);
+
+        return relatoRepository.save(relato);
+    }
+
 }

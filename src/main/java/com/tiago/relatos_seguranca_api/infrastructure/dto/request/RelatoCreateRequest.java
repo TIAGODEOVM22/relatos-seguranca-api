@@ -1,6 +1,8 @@
 package com.tiago.relatos_seguranca_api.infrastructure.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,11 +12,29 @@ import lombok.Setter;
 public class RelatoCreateRequest {
 
     @NotBlank(message = "Title cannot be empty.")
-    @Size(min = 5, max = 100, message = "Title must contain between 5 and 100 characters.")
+    @Size(
+            min = 5,
+            max = 100,
+            message = "Title must contain between 5 and 100 characters."
+    )
+    @Pattern(
+            regexp = "^[\\p{L} ]+$",
+            message = "Title must contain only letters and spaces."
+    )
     private String titulo;
 
     @NotBlank(message = "Description cannot be empty.")
-    @Size(min = 10, max = 1000, message = "Description must contain between 10 and 1000 characters.")
+    @Size(
+            min = 10,
+            max = 1000,
+            message = "Description must contain between 10 and 1000 characters."
+    )
+    @Pattern(
+            regexp = "^[\\p{L}\\p{N}\\s.,;:!?()\\-/%]+$",
+            message = "Description contains invalid characters."
+    )
     private String descricao;
 
+    @NotNull(message = "O usuário é obrigatório.")
+    private Long usuarioId;
 }

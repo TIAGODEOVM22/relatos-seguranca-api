@@ -14,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
+
 
     @Autowired
     private UsuarioAssembler usuarioAssembler;
@@ -37,13 +40,28 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioAssembler.toModel(usuario));
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
-    @PostMapping    /*Criar usuario*/
-    public ResponseEntity<Void> createUser( @RequestBody @Valid UsuarioCreateRequest usuarioCreateRequest) {
-        Usuario usuario = usuarioAssembler.toDomainObject(usuarioCreateRequest);
-        usuarioService.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED.value()).build();
+//    //@PreAuthorize("hasRole('ADMIN')") SALVA SEM RETORNAR A URI
+//    @PostMapping    /*Criar usuario*/
+//    public ResponseEntity<Void> createUser( @RequestBody @Valid UsuarioCreateRequest usuarioCreateRequest) {
+//        Usuario usuario = usuarioAssembler.toDomainObject(usuarioCreateRequest);
+//        usuarioService.save(usuario);
+//        return ResponseEntity.status(HttpStatus.CREATED.value()).build();
+//
+//    }
 
+    @PostMapping /*SALVA RETORNANDO A URI*/
+    public ResponseEntity<Void> createUser (@RequestBody @Valid UsuarioCreateRequest request) {
+
+        Usuario usuario = usuarioAssembler.toDomainObject(request);
+        usuario = usuarioService.save(usuario);
+
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(usuario.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).build();
     }
 
     //@PreAuthorize("hasRole('ADMIN')")
