@@ -1,5 +1,6 @@
 package com.tiago.relatos_seguranca_api.services;
 
+import com.tiago.relatos_seguranca_api.exception.ResourceNotFoundException;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.response.RelatoResponse;
 import com.tiago.relatos_seguranca_api.infrastructure.entity.Relato;
 import com.tiago.relatos_seguranca_api.infrastructure.entity.Usuario;
@@ -43,10 +44,10 @@ public class RelatoService {
         return relatoRepository.save(relato);
     }
 
-    //@Transactional
+    @Transactional
     public Relato findById (Long id) {
         return relatoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Object not found. Id: " + id + ", Type: " + Relato.class.getSimpleName()
                 ));
     }

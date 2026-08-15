@@ -4,16 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 public class FotoRequest {
 
-    @NotBlank(message = "O nome do arquivo é obrigatório.")
-    @Size(max = 255)
-    private String nomeArquivo;
-
-    @NotBlank(message = "A URL é obrigatória.")
-    @Size(max = 500)
-    private String url;
+    private MultipartFile foto;
 }

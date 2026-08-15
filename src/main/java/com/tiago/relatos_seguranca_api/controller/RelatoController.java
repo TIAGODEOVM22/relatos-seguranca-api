@@ -46,9 +46,7 @@ public class RelatoController {
 
     @PostMapping /*SALVA RETORNANDO A URI*/
     public ResponseEntity<Void> createRelato(@RequestBody @Valid RelatoCreateRequest relatoCreateRequest) {
-
         Relato relato = relatoAssembler.toDomainObject(relatoCreateRequest);
-
         relato = relatoService.salvarRelato(
                 relato,
                 relatoCreateRequest.getUsuarioId()
@@ -99,7 +97,6 @@ public class RelatoController {
                 id,
                 request.getPrioridade()
         );
-
         return ResponseEntity.ok(
                 relatoAssembler.toModel(relato)
         );

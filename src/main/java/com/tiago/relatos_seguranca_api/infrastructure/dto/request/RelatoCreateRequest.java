@@ -18,8 +18,8 @@ public class RelatoCreateRequest {
             message = "Title must contain between 5 and 100 characters."
     )
     @Pattern(
-            regexp = "^[\\p{L} ]+$",
-            message = "Title must contain only letters and spaces."
+            regexp = "^[\\p{L}\\p{N} #\\-]+$",
+            message = "Title contains invalid characters."
     )
     private String titulo;
 

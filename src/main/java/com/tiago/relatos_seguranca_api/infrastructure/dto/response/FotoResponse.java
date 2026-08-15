@@ -8,12 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class FotoResponse {
 
-    private MultipartFile arquivo;
-
+    private Long id;
     private String nomeArquivo;
-
-//    private String url;
-//    private String contentType;
-//    private Long tamanho;
+    private String caminhoArquivo;
+    private String contentType;
+    private Long tamanho;
 
 }

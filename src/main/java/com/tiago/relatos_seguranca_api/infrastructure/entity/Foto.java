@@ -30,7 +30,7 @@ public class Foto {
     @NotBlank(message = "A URL da foto é obrigatória.")
     @Size(max = 500)
     @Column(nullable = false, length = 500)
-    private String url;
+    private String caminhoArquivo;
 
     @NotBlank(message = "O tipo do arquivo é obrigatório.")
     @Size(max = 100)

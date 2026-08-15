@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,5 +25,7 @@ public class RelatoResponse {
     private LocalDateTime dataDoRelato;
 
     private UsuarioRelatoResponse usuario;
+
+    private List<FotoResponse> fotos;
 
 }
