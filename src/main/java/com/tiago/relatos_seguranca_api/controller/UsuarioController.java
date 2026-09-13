@@ -11,8 +11,8 @@ import com.tiago.relatos_seguranca_api.infrastructure.repository.UsuarioReposito
 import com.tiago.relatos_seguranca_api.services.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,22 +33,22 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping("/{id}")    /*Buscar usuario por id*/
     public ResponseEntity<UsuarioResponse> getUsuarioById(@PathVariable Long id) {
         Usuario usuario = usuarioService.findById(id);
         return ResponseEntity.ok(usuarioAssembler.toModel(usuario));
     }
 
-//    //@PreAuthorize("hasRole('ADMIN')") SALVA SEM RETORNAR A URI
-//    @PostMapping    /*Criar usuario*/
-//    public ResponseEntity<Void> createUser( @RequestBody @Valid UsuarioCreateRequest usuarioCreateRequest) {
-//        Usuario usuario = usuarioAssembler.toDomainObject(usuarioCreateRequest);
-//        usuarioService.save(usuario);
-//        return ResponseEntity.status(HttpStatus.CREATED.value()).build();
-//
-//    }
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @GetMapping("/search")
+    public ResponseEntity<List<UsuarioResponse>> findByName(
+            @RequestParam String name) {
 
+        return ResponseEntity.ok(usuarioService.findByName(name));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping /*SALVA RETORNANDO A URI*/
     public ResponseEntity<Void> createUser (@RequestBody @Valid UsuarioCreateRequest request) {
 
@@ -64,14 +64,14 @@ public class UsuarioController {
         return ResponseEntity.created(uri).build();
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping /*Buscar todos usuarios*/
     public ResponseEntity<List<UsuarioResponse>> getAllUsuarios() {
         List<UsuarioResponse> usuarios = usuarioService.findAll();
         return ResponseEntity.ok(usuarios);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}") // Atualiza Nome e Email
     public ResponseEntity<UsuarioResponse> updateUserNameAndEmail(
             @PathVariable Long id, @RequestBody @Valid UsuarioUpdateRequest usuarioUpdateRequest) {
@@ -79,14 +79,14 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioAssembler.toModel(usuarioAtualizado));
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")/*Deletar usuario*/
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         usuarioService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-   //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/profiles")
     public ResponseEntity<UsuarioResponse> updateProfiles(
             @PathVariable Long id,

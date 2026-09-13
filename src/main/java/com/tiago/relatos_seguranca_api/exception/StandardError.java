@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +25,7 @@ public class StandardError implements Serializable {
     private String message;
     private String path;
 
+    public static UUID builder() {
+        return null;
+    }
 }

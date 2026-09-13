@@ -9,6 +9,7 @@ import com.tiago.relatos_seguranca_api.services.RelatoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,20 +44,6 @@ public class FotoController {
 //     }
 //
 //    }
-    //  CRIAR FOTO SEM RETORNAR A URI
-//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<FotoResponse> upload(
-//            @PathVariable Long relatoId,
-//            @RequestParam("foto") MultipartFile arquivo) {
-//
-//        Relato relato = relatoService.findById(relatoId);
-//
-//        Foto foto = fotoService.salvarFoto(arquivo, relato);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(fotoAssembler.toModel(foto));
-//    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FotoResponse> upload(
@@ -80,16 +67,16 @@ public class FotoController {
 
     /*Busca todas as fotos de um relato
     * GET /relatos/{relatoId}/fotos*/
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN', 'CUSTOMER')")
     @GetMapping
-    public ResponseEntity<List<FotoResponse>> listarFotos(
-            @PathVariable Long relatoId) {
-
+    public ResponseEntity<List<FotoResponse>> listarFotos (@PathVariable Long relatoId) {
         List<Foto> fotos = fotoService.listarPorRelato(relatoId);
-
         return ResponseEntity.ok(fotoAssembler.toCollectionModel(fotos));
     }
 
-    @DeleteMapping("/{fotoId}") /*DELETE /relatos/1/fotos/8*/
+    /*DELETE /relatos/1/fotos/8*/
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @DeleteMapping("/{fotoId}")
     public ResponseEntity<Void> excluir(
             @PathVariable Long relatoId,
             @PathVariable Long fotoId) {
@@ -98,8 +85,6 @@ public class FotoController {
 
         return ResponseEntity.noContent().build();
     }
-
-
 
 //  EXCLUI FOTO APENAS DO BANCO DE DADOS, SEM EXCLUIR O ARQUIVO FISICO
 //    @DeleteMapping("/{fotoId}")

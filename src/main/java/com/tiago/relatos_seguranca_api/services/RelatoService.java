@@ -7,8 +7,6 @@ import com.tiago.relatos_seguranca_api.infrastructure.entity.Usuario;
 import com.tiago.relatos_seguranca_api.infrastructure.enums.Prioridade;
 import com.tiago.relatos_seguranca_api.infrastructure.enums.StatusRelato;
 import com.tiago.relatos_seguranca_api.infrastructure.repository.RelatoRepository;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

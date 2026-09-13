@@ -6,13 +6,12 @@ import com.tiago.relatos_seguranca_api.infrastructure.dto.request.RelatoPriorida
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.RelatoUpdateRequest;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.response.RelatoResponse;
 import com.tiago.relatos_seguranca_api.infrastructure.entity.Relato;
-import com.tiago.relatos_seguranca_api.infrastructure.entity.Usuario;
 import com.tiago.relatos_seguranca_api.services.RelatoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,20 +28,6 @@ public class RelatoController {
 
     @Autowired
     private final RelatoAssembler relatoAssembler;
-
-//    @PostMapping /*SALAVA RELATO SEM RETORNAR A URI*/
-//    public ResponseEntity<Void> createRelato(
-//            @RequestBody @Valid RelatoCreateRequest relatoCreateRequest) {
-//
-//        Relato relato = relatoAssembler.toDomainObject(relatoCreateRequest);
-//
-//        relatoService.salvarRelato(
-//                relato,
-//                relatoCreateRequest.getUsuarioId()
-//        );
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
 
     @PostMapping /*SALVA RETORNANDO A URI*/
     public ResponseEntity<Void> createRelato(@RequestBody @Valid RelatoCreateRequest relatoCreateRequest) {
@@ -61,18 +46,21 @@ public class RelatoController {
         return ResponseEntity.created(uri).build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping("/{id}")
     public ResponseEntity<RelatoResponse> getRelatoById(@PathVariable Long id) {
         Relato relato = relatoService.findById(id);
         return ResponseEntity.ok(relatoAssembler.toModel(relato));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping
     public ResponseEntity<List<RelatoResponse>> getAllRelatos() {
         List<RelatoResponse> relatos = relatoService.findAll();
         return ResponseEntity.ok(relatos);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PutMapping("/{id}")
     public ResponseEntity<RelatoResponse> updateRelato(
             @PathVariable Long id,
@@ -89,6 +77,7 @@ public class RelatoController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PatchMapping("/{id}/prioridade")
     public ResponseEntity<RelatoResponse> atualizarPrioridade( @PathVariable Long id,
                                                                @RequestBody @Valid RelatoPrioridadeRequest request) {
@@ -102,6 +91,7 @@ public class RelatoController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         relatoService.deletarRelato(id);

@@ -8,7 +8,7 @@ import com.tiago.relatos_seguranca_api.infrastructure.dto.response.UsuarioRespon
 import com.tiago.relatos_seguranca_api.infrastructure.entity.Usuario;
 import com.tiago.relatos_seguranca_api.infrastructure.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +21,7 @@ public class UsuarioService { /*NÃO SE USA AUTOWIRED*/
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioAssembler usuarioAssembler;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public Usuario findById(Long id) {
@@ -44,9 +45,24 @@ public class UsuarioService { /*NÃO SE USA AUTOWIRED*/
             }
         }
 
-    @Transactional
+        /*Busca Por Nome*/
+    public List <UsuarioResponse> findByName(String name){
+        return usuarioRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(usuarioAssembler::toModel)
+                .toList();
+    }
+
+
+    @Transactional /*criptografa a senha antes de salvar*/
     public Usuario save(Usuario usuario) {
+
         verifyIfEmailAlreadyExists(usuario.getEmail(), null);
+
+        usuario.setPassword(
+                passwordEncoder.encode(usuario.getPassword())
+        );
+
         return usuarioRepository.save(usuario);
     }
 

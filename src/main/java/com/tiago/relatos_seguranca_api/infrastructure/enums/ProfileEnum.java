@@ -16,16 +16,32 @@ public enum ProfileEnum {
 
     private final String descricao;
 
-    public static ProfileEnum toEnum(String name) {
-
-        if (name == null) {
-            return null;
-        }
-
-        return Arrays.stream(values())
-                .filter(profile -> profile.name().equalsIgnoreCase(name))
+    public static ProfileEnum toEnum (final String description) {
+        return Arrays.stream(ProfileEnum.values())
+                .filter(profileEnum -> profileEnum.getDescription().equals(description))
                 .findFirst()
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Perfil inválido: " + name));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid description: " + description));
+
+
     }
+
+    public String getDescription() {
+        return descricao;
+    }
+
+//    public static ProfileEnum toEnum(String name) {
+//
+//        if (name == null) {
+//            return null;
+//        }
+//
+//        return Arrays.stream(values())
+//                .filter(profile -> profile.name().equalsIgnoreCase(name))
+//                .findFirst()
+//                .orElseThrow(() ->
+//                        new IllegalArgumentException("Perfil inválido: " + name));
+//    }
+
+
 }
