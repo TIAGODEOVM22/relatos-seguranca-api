@@ -19,6 +19,8 @@ import java.util.TimeZone;
 public class RelatosSegurancaApiApplication {
 	//implementar pesquisa por nome de usuario
 
+	//http://localhost:8080/swagger-ui/index.html
+
 	private final UsuarioRepository usuarioRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 

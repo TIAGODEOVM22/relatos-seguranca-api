@@ -29,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/relatos/{relatoId}/fotos")
 @RequiredArgsConstructor
-public class FotoController {
+public class FotosControllerImpl {
 
     private final FotoService fotoService;
     private final RelatoService relatoService;
