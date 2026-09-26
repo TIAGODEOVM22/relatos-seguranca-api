@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -266,4 +267,30 @@ public interface RelatoController {
     ResponseEntity<Void> delete(
             @PathVariable Long id
     );
+
+    @Operation(
+            summary = "Gerar PDF dos relatos",
+            description = "Gera um arquivo PDF contendo a listagem dos relatos de segurança."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "PDF gerado com sucesso",
+                    content = @Content(
+                            mediaType = "application/pdf"
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Não autenticado"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Acesso negado"
+            )
+    })
+    @SecurityRequirement(name = "bearer-key")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @GetMapping("/pdf")
+    ResponseEntity<Resource> gerarPdfRelatos();
 }

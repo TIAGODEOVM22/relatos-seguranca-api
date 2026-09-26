@@ -13,7 +13,6 @@ public enum ProfileEnum {
     ROLE_CUSTOMER("ROLE_CUSTOMER"),
     ROLE_TECHNICIAN("ROLE_TECHNICIAN");
 
-
     private final String descricao;
 
     public static ProfileEnum toEnum (final String description) {

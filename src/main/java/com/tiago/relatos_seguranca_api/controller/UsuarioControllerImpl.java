@@ -1,36 +1,25 @@
 package com.tiago.relatos_seguranca_api.controller;
 
 
-import com.tiago.relatos_seguranca_api.exception.StandardError;
-import com.tiago.relatos_seguranca_api.exception.ValidationError;
 import com.tiago.relatos_seguranca_api.infrastructure.assembler.UsuarioAssembler;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.UsuarioCreateRequest;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.UsuarioProfileRequest;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.UsuarioUpdateRequest;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.response.UsuarioResponse;
 import com.tiago.relatos_seguranca_api.infrastructure.entity.Usuario;
-import com.tiago.relatos_seguranca_api.infrastructure.repository.UsuarioRepository;
+import com.tiago.relatos_seguranca_api.services.PdfService;
 import com.tiago.relatos_seguranca_api.services.UsuarioService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -39,6 +28,7 @@ public class UsuarioControllerImpl implements UsuarioController {
 
     private final UsuarioAssembler usuarioAssembler;
     private final UsuarioService usuarioService;
+    private final PdfService pdfService;
 
     @Override
     public ResponseEntity<UsuarioResponse> getUsuarioById(Long id) {
@@ -116,4 +106,19 @@ public class UsuarioControllerImpl implements UsuarioController {
                 usuarioAssembler.toModel(usuarioAtualizado)
         );
     }
+
+    @Override
+    public ResponseEntity<Resource> gerarPdfUsuarios() {
+
+        Resource pdf = pdfService.gerarPdfUsuarios();
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=usuarios.pdf"
+                )
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
 }
