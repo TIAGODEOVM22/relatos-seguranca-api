@@ -25,7 +25,6 @@ import java.util.UUID;
 public class FotoService {
 
     private final FotoRepository fotoRepository;
-
     private final RelatoService relatoService;
 
     /*Variavel de ambiente definida no properties*/

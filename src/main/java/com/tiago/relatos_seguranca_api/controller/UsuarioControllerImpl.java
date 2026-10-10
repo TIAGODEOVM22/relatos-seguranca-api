@@ -2,6 +2,7 @@ package com.tiago.relatos_seguranca_api.controller;
 
 
 import com.tiago.relatos_seguranca_api.infrastructure.assembler.UsuarioAssembler;
+import com.tiago.relatos_seguranca_api.infrastructure.assembler.UsuarioModelAssembler;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.UsuarioCreateRequest;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.UsuarioProfileRequest;
 import com.tiago.relatos_seguranca_api.infrastructure.dto.request.UsuarioUpdateRequest;
@@ -11,6 +12,8 @@ import com.tiago.relatos_seguranca_api.services.PdfService;
 import com.tiago.relatos_seguranca_api.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
@@ -29,14 +35,18 @@ public class UsuarioControllerImpl implements UsuarioController {
     private final UsuarioAssembler usuarioAssembler;
     private final UsuarioService usuarioService;
     private final PdfService pdfService;
+    private final UsuarioModelAssembler usuarioModelAssembler;
+
 
     @Override
-    public ResponseEntity<UsuarioResponse> getUsuarioById(Long id) {
+    public ResponseEntity<EntityModel<UsuarioResponse>> getUsuarioById(Long id) {
 
         Usuario usuario = usuarioService.findById(id);
 
+        UsuarioResponse usuarioResponse = usuarioAssembler.toModel(usuario);
+
         return ResponseEntity.ok(
-                usuarioAssembler.toModel(usuario)
+                usuarioModelAssembler.toModel(usuarioResponse)
         );
     }
 
@@ -64,11 +74,20 @@ public class UsuarioControllerImpl implements UsuarioController {
     }
 
     @Override
-    public ResponseEntity<List<UsuarioResponse>> getAllUsuarios() {
+    public ResponseEntity<CollectionModel<EntityModel<UsuarioResponse>>> getAllUsuarios() {
 
         List<UsuarioResponse> usuarios = usuarioService.findAll();
 
-        return ResponseEntity.ok(usuarios);
+        CollectionModel<EntityModel<UsuarioResponse>> collection =
+                usuarioModelAssembler.toCollectionModel(usuarios);
+
+        collection.add(
+                linkTo(methodOn(UsuarioController.class)
+                        .getAllUsuarios())
+                        .withSelfRel()
+        );
+
+        return ResponseEntity.ok(collection);
     }
 
     @Override

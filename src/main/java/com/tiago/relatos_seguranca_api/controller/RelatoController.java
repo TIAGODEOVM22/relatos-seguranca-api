@@ -17,13 +17,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @Tag(
         name = "Relatos",
@@ -62,12 +66,14 @@ public interface RelatoController {
                     description = "Não autenticado"
             )
     })
-    @SecurityRequirement(name = "bearer-key")
-    @PostMapping
-    ResponseEntity<Void> createRelato(
-            @RequestBody @Valid RelatoCreateRequest request
-    );
 
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<Void> createRelato(
+            @RequestPart("request") @Valid RelatoCreateRequest request,
+            @RequestPart("foto") MultipartFile foto,
+            Authentication authentication
+    );
+    /*_____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Buscar relato por ID",
@@ -102,7 +108,7 @@ public interface RelatoController {
     @SecurityRequirement(name = "bearer-key")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping("/{id}")
-    ResponseEntity<RelatoResponse> getRelatoById(
+    ResponseEntity<EntityModel<RelatoResponse>> getRelatoById(
             @Parameter(
                     description = "ID do relato",
                     example = "1"
@@ -110,6 +116,7 @@ public interface RelatoController {
             @PathVariable Long id
     );
 
+    /*_____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Listar todos os relatos",
@@ -138,8 +145,9 @@ public interface RelatoController {
     @SecurityRequirement(name = "bearer-key")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping
-    ResponseEntity<List<RelatoResponse>> getAllRelatos();
+    ResponseEntity<CollectionModel<EntityModel<RelatoResponse>>> getAllRelatos();
 
+    /*_____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Atualizar relato",
@@ -187,6 +195,7 @@ public interface RelatoController {
             @RequestBody @Valid RelatoUpdateRequest request
     );
 
+    /*_____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Atualizar prioridade do relato",
@@ -234,6 +243,8 @@ public interface RelatoController {
             @RequestBody @Valid RelatoPrioridadeRequest request
     );
 
+    /*_____________________________________________________________________________________________________*/
+
 
     @Operation(
             summary = "Excluir relato",
@@ -267,6 +278,8 @@ public interface RelatoController {
     ResponseEntity<Void> delete(
             @PathVariable Long id
     );
+
+    /*_____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Gerar PDF dos relatos",

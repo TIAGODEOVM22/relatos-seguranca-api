@@ -34,7 +34,4 @@ public class RelatoCreateRequest {
             message = "Description contains invalid characters."
     )
     private String descricao;
-
-    @NotNull(message = "O usuário é obrigatório.")
-    private Long usuarioId;
 }

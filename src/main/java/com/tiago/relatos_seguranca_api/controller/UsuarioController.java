@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -66,14 +68,14 @@ public interface UsuarioController {
     @GetMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
-    ResponseEntity<UsuarioResponse> getUsuarioById(
+    ResponseEntity<EntityModel<UsuarioResponse>> getUsuarioById(
             @Parameter(
                     description = "ID do usuário",
                     example = "1"
             )
             @PathVariable Long id
     );
-
+/*____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Buscar usuários por nome",
@@ -110,6 +112,7 @@ public interface UsuarioController {
             @RequestParam String name
     );
 
+    /*____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Criar usuário",
@@ -153,6 +156,8 @@ public interface UsuarioController {
             @RequestBody @Valid UsuarioCreateRequest request
     );
 
+    /*____________________________________________________________________________________________________*/
+
 
     @Operation(
             summary = "Listar todos os usuários",
@@ -182,7 +187,9 @@ public interface UsuarioController {
     @GetMapping
     @ResponseBody
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
-    ResponseEntity<List<UsuarioResponse>> getAllUsuarios();
+    ResponseEntity<CollectionModel<EntityModel<UsuarioResponse>>> getAllUsuarios();
+
+    /*____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Atualizar usuário",
@@ -231,6 +238,7 @@ public interface UsuarioController {
             @RequestBody @Valid UsuarioUpdateRequest request
     );
 
+    /*____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Excluir usuário",
@@ -265,6 +273,8 @@ public interface UsuarioController {
     ResponseEntity<Void> delete(
             @PathVariable Long id
     );
+
+    /*____________________________________________________________________________________________________*/
 
 
     @Operation(
@@ -313,6 +323,8 @@ public interface UsuarioController {
             @PathVariable Long id,
             @RequestBody @Valid UsuarioProfileRequest request
     );
+
+    /*____________________________________________________________________________________________________*/
 
     @Operation(
             summary = "Gerar PDF dos usuários",

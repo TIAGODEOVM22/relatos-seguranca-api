@@ -7,6 +7,7 @@ import com.tiago.relatos_seguranca_api.infrastructure.entity.Usuario;
 import com.tiago.relatos_seguranca_api.infrastructure.enums.Prioridade;
 import com.tiago.relatos_seguranca_api.infrastructure.enums.StatusRelato;
 import com.tiago.relatos_seguranca_api.infrastructure.repository.RelatoRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+
 public class RelatoService {
-    @Autowired
+
     private final ModelMapper modelMapper;
-
-    @Autowired
     private final RelatoRepository relatoRepository;
-
-    @Autowired
     private final UsuarioService usuarioService;
 
     @Transactional
