@@ -91,16 +91,11 @@ public class UsuarioControllerImpl implements UsuarioController {
     }
 
     @Override
-    public ResponseEntity<UsuarioResponse> updateUserNameAndEmail(
-            Long id,
-            UsuarioUpdateRequest request) {
-
-        Usuario usuarioAtualizado =
-                usuarioService.updateUserNameAndEmail(id, request);
-
-        return ResponseEntity.ok(
-                usuarioAssembler.toModel(usuarioAtualizado)
-        );
+    public ResponseEntity<EntityModel<UsuarioResponse>> updateUserNameAndEmail(Long id, UsuarioUpdateRequest request) {
+        Usuario usuarioAtualizado = usuarioService.updateUserNameAndEmail(id, request);
+        UsuarioResponse response = usuarioAssembler.toModel(usuarioAtualizado);
+        EntityModel<UsuarioResponse> resource = usuarioModelAssembler.toModel(response);
+        return ResponseEntity.ok(resource);
     }
 
     @Override

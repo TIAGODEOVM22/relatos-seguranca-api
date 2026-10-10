@@ -90,21 +90,25 @@ public class RelatoControllerImpl implements RelatoController {
     }
 
     @Override
-    public ResponseEntity<RelatoResponse> updateRelato(Long id, RelatoUpdateRequest request) {
+    public ResponseEntity<EntityModel<RelatoResponse>> updateRelato(Long id, RelatoUpdateRequest request) {
         Relato relato = relatoService.findById(id);
-        relatoAssembler.copyToDomainObject(
-                request,
-                relato
-        );
+        relatoAssembler.copyToDomainObject(request, relato);
+        Relato relatoAtualizado = relatoService.updateRelato(id, relato);
 
-        Relato relatoAtualizado =
-                relatoService.updateRelato(id, relato);
+        RelatoResponse response = relatoAssembler.toModel(relatoAtualizado);
 
-        return ResponseEntity.ok(
-                relatoAssembler.toModel(relatoAtualizado)
-        );
+        EntityModel<RelatoResponse> resource = EntityModel.of(response);
+
+        resource.add(linkTo(methodOn(RelatoController.class)
+                        .getRelatoById(id))
+                        .withSelfRel());
+
+        resource.add(linkTo(methodOn(RelatoController.class)
+                        .getAllRelatos())
+                        .withRel("relatos"));
+
+        return ResponseEntity.ok(resource);
     }
-
     @Override
     public ResponseEntity<RelatoResponse> atualizarPrioridade(Long id, RelatoPrioridadeRequest request) {
         Relato relato = relatoService.updatePrioridadeRelato(id, request.getPrioridade());

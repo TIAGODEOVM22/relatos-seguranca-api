@@ -231,9 +231,8 @@ public interface UsuarioController {
     })
     @SecurityRequirement(name = "bearer-key")
     @PutMapping("/{id}")
-    @ResponseBody
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<UsuarioResponse> updateUserNameAndEmail(
+    ResponseEntity<EntityModel<UsuarioResponse>> updateUserNameAndEmail(
             @PathVariable Long id,
             @RequestBody @Valid UsuarioUpdateRequest request
     );

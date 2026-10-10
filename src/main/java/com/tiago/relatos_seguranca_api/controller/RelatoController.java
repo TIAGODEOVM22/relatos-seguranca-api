@@ -190,10 +190,10 @@ public interface RelatoController {
     @SecurityRequirement(name = "bearer-key")
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PutMapping("/{id}")
-    ResponseEntity<RelatoResponse> updateRelato(
+    ResponseEntity<EntityModel<RelatoResponse>> updateRelato(
             @PathVariable Long id,
             @RequestBody @Valid RelatoUpdateRequest request
-    );
+    );;
 
     /*_____________________________________________________________________________________________________*/
 

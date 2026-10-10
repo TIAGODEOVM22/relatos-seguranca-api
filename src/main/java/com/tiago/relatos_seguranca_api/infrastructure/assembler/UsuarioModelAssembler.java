@@ -16,17 +16,11 @@ public class UsuarioModelAssembler
     @Override
     public EntityModel<UsuarioResponse> toModel(UsuarioResponse usuario) {
 
-        return EntityModel.of(
-                usuario,
-                linkTo(
-                        methodOn(UsuarioController.class)
-                                .getUsuarioById(usuario.getId())
-                ).withSelfRel(),
+        return EntityModel.of(usuario,
+                linkTo(methodOn(UsuarioController.class)
+                        .getUsuarioById(usuario.getId())).withSelfRel(),
 
-                linkTo(
-                        methodOn(UsuarioController.class)
-                                .getAllUsuarios()
-                ).withRel("usuarios")
+                linkTo(methodOn(UsuarioController.class).getAllUsuarios()).withRel("usuarios")
         );
     }
 }
